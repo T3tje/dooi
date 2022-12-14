@@ -1,6 +1,10 @@
+
 .App {
   padding: 10%;
 }
 
-
+.todoListContainer {
+  max-width: 500px;
+  margin: 0 auto;
+}
 

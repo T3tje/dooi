@@ -1,5 +1,4 @@
 import React, { useReducer } from "react"
-import "../../node_modules/bootstrap/dist/css/bootstrap.min.css"
 
 function listReducer(state, action) {
     switch (action.type) {
@@ -12,8 +11,18 @@ function listReducer(state, action) {
         case "additem": 
             return {
                 input:"",
-                list: [...state.list, state.input]
+                list: [state.input,...state.list]
             }
+
+        case "removeitem": {
+         let oldList = state.list
+         let index = oldList.indexOf(action.value)         
+         
+            return {
+                input: state.input,
+                list: [...oldList.slice(0,index),...oldList.slice(index + 1)]
+            }
+        }
     
         default:
             return state;
@@ -36,26 +45,38 @@ export default function TodoList() {
     }
 
    return (
-    <div>
-        <form onSubmit={onSubmit}>
+    <div className="todoListContainer">
+        <form className="input-group mb-3"onSubmit={onSubmit}>
             <input 
+                className="form-control"
                 type="text"
                 value={state.input}
+                maxLength="30"
+                placeholder="ENTER TASK HERE"
                 onChange={ e => dispatch({
                     type: "inputchange", 
                     value: e.currentTarget.value
                 })}
             />
-            <button type="submit">ADD ITEM</button>
+            <button className="btn btn-outline-primary" type="submit">ADD TASK</button>
         </form>
         <ul className="list-group"> {
-            state.list.map(item => 
+            state.list.map(item => { return(
                 <li 
                     key={item + Math.random().toString()}
-                    className="list-group-item"
+                    className="list-group-item list-group-item-action container-fluid d-flex justify-content-between align-items-center"
                     >
                     {item}
-                </li>)
+                    <button
+                        className="btn btn-outline-danger"
+                        onClick={() => dispatch({type:"removeitem", value:item})}
+                    >
+                        DEL
+                    </button>
+                </li>
+                
+            )})
+            
         }</ul> 
 </div>
    )
